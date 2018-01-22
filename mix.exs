@@ -4,10 +4,21 @@ defmodule Igdb.MixProject do
   def project do
     [
       app: :igdb,
+      description: "Elixir wrapper for the Internet Game Database API. https://www.igdb.com/",
       version: "0.1.0",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      package: package()
+    ]
+  end
+
+  defp package do
+    [
+      files: ["lib", "mix.exs", "README.md", "LICENSE"],
+      maintainers: ["Tomasz Tomczyk"],
+      licenses: ["MIT"],
+      links: %{Github: "https://github.com/tomasz-tomczyk/igdb"}
     ]
   end
 
