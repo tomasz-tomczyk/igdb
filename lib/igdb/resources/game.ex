@@ -9,7 +9,6 @@ defmodule Igdb.Game do
             summary: nil
 
   alias Igdb.Config
-  require IO
 
   @doc ~S"""
   Finds a single game by id.
@@ -28,10 +27,10 @@ defmodule Igdb.Game do
         |> List.first()
 
       {:ok, %HTTPoison.Response{status_code: 404}} ->
-        IO.puts("Not found :(")
+        "Not found :("
 
       {:error, %HTTPoison.Error{reason: reason}} ->
-        IO.inspect(reason)
+        reason
     end
   end
 end

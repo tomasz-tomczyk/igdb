@@ -1,7 +1,8 @@
 defmodule Igdb.GameTest do
   use ExUnit.Case, async: false
 
-  alias Igdb.Config
+  alias Igdb.{Config, Game}
+
   import TestHelper
   import Mock
 
@@ -16,7 +17,7 @@ defmodule Igdb.GameTest do
     }])
 
     with_mock HTTPoison, get: fn _url -> response(body) end do
-      assert Igdb.Game.find(359) == %Igdb.Game{
+      assert Game.find(359) == %Igdb.Game{
                id: 359,
                name: "Final Fantasy XV",
                slug: "final-fantasy-xv",

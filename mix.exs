@@ -34,7 +34,8 @@ defmodule Igdb.MixProject do
     [
       {:httpoison, "~> 1.0"},
       {:poison, "~> 3.1"},
-      {:mock, "~> 0.3.0", only: :test}
+      {:mock, "~> 0.3.0", only: :test},
+      {:credo, "~> 0.9.0-rc1", only: [:dev, :test], runtime: false}
     ]
   end
 end
