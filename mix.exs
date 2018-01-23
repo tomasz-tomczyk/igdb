@@ -32,7 +32,9 @@ defmodule Igdb.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.0"}
+      {:httpoison, "~> 1.0"},
+      {:poison, "~> 3.1"},
+      {:mock, "~> 0.3.0", only: :test}
     ]
   end
 end
