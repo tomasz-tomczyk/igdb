@@ -8,7 +8,7 @@ defmodule Igdb.GameTest do
 
   doctest Igdb.Game
 
-  test "test_name" do
+  test "Find single game" do
     body = ~s([{
       "id": 359,
       "name": "Final Fantasy XV",
@@ -16,15 +16,19 @@ defmodule Igdb.GameTest do
       "summary": "Final Fantasy..."
     }])
 
-    with_mock HTTPoison, get: fn _url -> response(body) end do
-      assert Game.find(359) == %Igdb.Game{
-               id: 359,
-               name: "Final Fantasy XV",
-               slug: "final-fantasy-xv",
-               summary: "Final Fantasy..."
-             }
+    with_mock HTTPoison, get!: fn _url -> response(body) end do
+      assert Game.find(359) ==
+               {:ok,
+                [
+                  %Igdb.Game{
+                    id: 359,
+                    name: "Final Fantasy XV",
+                    slug: "final-fantasy-xv",
+                    summary: "Final Fantasy..."
+                  }
+                ]}
 
-      assert called(HTTPoison.get("#{Config.api_root()}/games/359"))
+      assert called(HTTPoison.get!("#{Config.api_root()}/games/359"))
     end
   end
 end
