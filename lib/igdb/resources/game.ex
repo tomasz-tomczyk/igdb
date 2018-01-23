@@ -15,8 +15,8 @@ defmodule Igdb.Game do
 
   ## Examples
 
-    Igdb.Game.find(359)
-    [%Igdb.Game{id: 359, name: "Final Fantasy XV", slug: "final-fantasy-xv", summary: "Final Fantasy XV is an action role-playing video game..."}]
+      Igdb.Game.find(359)
+      [%Igdb.Game{id: 359, name: "Final Fantasy XV", slug: "final-fantasy-xv", summary: "Final Fantasy XV is an action role-playing video game..."}]
 
   """
   def find(game_id) do

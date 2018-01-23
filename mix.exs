@@ -10,6 +10,7 @@ defmodule Igdb.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       package: package(),
+      docs: docs(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -29,6 +30,13 @@ defmodule Igdb.MixProject do
     ]
   end
 
+  def docs do
+    [
+      readme: "README.md",
+      main: Igdb
+    ]
+  end
+
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
@@ -43,7 +51,8 @@ defmodule Igdb.MixProject do
       {:poison, "~> 3.1"},
       {:mock, "~> 0.3.0", only: :test},
       {:credo, "~> 0.9.0-rc1", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.8", only: :test}
+      {:excoveralls, "~> 0.8", only: :test},
+      {:ex_doc, "~> 0.16", only: :dev, runtime: false}
     ]
   end
 end
