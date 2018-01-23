@@ -17,3 +17,4 @@ script:
   - mix format --check-formatted --dry-run
   - mix credo --strict
   - mix test
+  - mix coveralls.travis
