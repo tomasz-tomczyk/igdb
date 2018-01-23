@@ -1,6 +1,5 @@
-# Igdb
-
-**TODO: Add description**
+# IGDB
+[![Build Status](https://api.travis-ci.org/tomasz-tomczyk/igdb.svg?branch=master)](https://travis-ci.org/tomasz-tomczyk/igdb)
 
 ## Installation
 
