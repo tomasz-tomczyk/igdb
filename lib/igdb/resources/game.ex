@@ -8,20 +8,8 @@ defmodule Igdb.Game do
             slug: nil,
             summary: nil
 
-  alias Igdb.Api
+  use Igdb.Resource
 
-  @doc ~S"""
-  Finds a single game by id.
-
-  ## Examples
-
-      Igdb.Game.find(359)
-      [%Igdb.Game{id: 359, name: "Final Fantasy XV", slug: "final-fantasy-xv", summary: "Final Fantasy XV is an action role-playing video game..."}]
-
-  """
-  @spec find(integer) :: tuple
-  def find(game_id) do
-    "games/#{game_id}"
-    |> Api.request(:collection, __MODULE__)
-  end
+  def resource_name, do: "game"
+  def resource_collection_name, do: "games"
 end

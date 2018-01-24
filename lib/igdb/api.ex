@@ -6,22 +6,41 @@ defmodule Igdb.Api do
 
   alias Igdb.Config
 
-  def request(path, type, module) do
-    path
-    |> generate_url()
+  @doc ~S"""
+  Finds a single resource by id.
+
+  ## Examples
+
+      Igdb.Game.find(359)
+      [%Igdb.Game{id: 359, name: "Final Fantasy XV", slug: "final-fantasy-xv", summary: "Final Fantasy XV is an action role-playing video game..."}]
+
+  """
+  @spec find(module, integer) :: {:ok, term} | {:error, String.t()}
+  def find(module, resource_id) do
+    module
+    |> generate_url(resource_id)
+    |> request(module)
+  end
+
+  def request(url, module) do
+    url
     |> HTTPoison.get!()
-    |> handle_errors(fn body ->
-      parse(body, type, module)
+    |> parse(module)
+  end
+
+  defp parse(response, module) do
+    handle_errors(response, fn body ->
+      Poison.decode!(body, as: [module.__struct__])
     end)
   end
 
-  defp parse(body, :resource, module) do
-    Poison.decode!(body, as: module.__struct__)
-  end
+  # defp parse(body, :resource, module) do
+  #   Poison.decode!(body, as: module.__struct__)
+  # end
 
-  defp parse(body, :collection, module) do
-    Poison.decode!(body, as: [module.__struct__])
-  end
+  # defp parse(body, :collection, module) do
+  #   Poison.decode!(body, as: [module.__struct__])
+  # end
 
   defp handle_errors(response, fun) do
     case response do
@@ -37,7 +56,7 @@ defmodule Igdb.Api do
     end
   end
 
-  defp generate_url(path) do
-    "#{Config.api_root()}/#{path}"
+  defp generate_url(module, resource_id) do
+    "#{Config.api_root()}/#{module.resource_collection_name}/#{resource_id}"
   end
 end
