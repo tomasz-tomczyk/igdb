@@ -24,7 +24,7 @@ defmodule Igdb.Api do
 
   def request(url, module) do
     url
-    |> HTTPoison.get!()
+    |> HTTPoison.get!(auth_headers())
     |> parse(module)
   end
 
@@ -50,6 +50,9 @@ defmodule Igdb.Api do
       %{body: _, status_code: 204} ->
         :ok
 
+      %{body: _, status_code: 403} ->
+        {:error, "Authentication parameters missing"}
+
       %{body: body, status_code: status} ->
         {:ok, json} = Poison.decode(body)
         {:error, json["message"], status}
@@ -58,5 +61,9 @@ defmodule Igdb.Api do
 
   defp generate_url(module, resource_id) do
     "#{Config.api_root()}/#{module.resource_collection_name}/#{resource_id}"
+  end
+
+  defp auth_headers do
+    ["user-key": Config.api_key(), Accept: "Application/json; Charset=utf-8"]
   end
 end

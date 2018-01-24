@@ -16,7 +16,7 @@ defmodule Igdb.GameTest do
       "summary": "Final Fantasy..."
     }])
 
-    with_mock HTTPoison, get!: fn _url -> response(body) end do
+    with_mock HTTPoison, get!: fn _url, _headers -> response(body) end do
       assert Game.find(359) ==
                {:ok,
                 [
@@ -28,7 +28,7 @@ defmodule Igdb.GameTest do
                   }
                 ]}
 
-      assert called(HTTPoison.get!("#{Config.api_root()}/games/359"))
+      assert called(HTTPoison.get!("#{Config.api_root()}/games/359", :_))
     end
   end
 end
