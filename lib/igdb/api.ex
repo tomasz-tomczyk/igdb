@@ -19,7 +19,7 @@ defmodule Igdb.Api do
   def get(module, resource_id, options) when is_integer(resource_id) do
     module
     |> Url.generate_url(options, resource_id)
-    |> request(module)
+    |> request(module, options)
   end
 
   @doc ~S"""
@@ -35,7 +35,7 @@ defmodule Igdb.Api do
   def get(module, resource_ids, options) when is_list(resource_ids) do
     module
     |> Url.generate_url(options, resource_ids |> Enum.join(","))
-    |> request(module)
+    |> request(module, options)
   end
 
   @doc ~S"""
@@ -43,28 +43,41 @@ defmodule Igdb.Api do
 
   ## Examples
 
-      Igdb.Game.search(%{search: "Final Fantasy", limit: 1, fields: ["name"], filter: %{version_parent: %{not_exists: 1}}, order: "popularity:desc"})
-      {:ok, [%Igdb.Game{id: 359, name: "Final Fantasy XV", slug: "final-fantasy-xv", summary: "Final Fantasy XV is an action role-playing video game..."}]}
+      Igdb.Game.search(%{search: "Final Fantasy", limit: 1, fields: "id,name", filter: %{version_parent: %{not_exists: 1}}, order: "popularity:desc"})
+      {:ok, [%{id: 11214, name: "World of Final Fantasy"}]}
 
   """
   @spec search(module, map) :: {:ok, term} | {:error, String.t()}
   def search(module, options) do
     module
     |> Url.generate_url(options)
-    |> request(module)
+    |> request(module, options)
   end
 
-  def request(url, module) do
+  def request(url, module, options) do
     url
     |> HTTPoison.get!(Url.auth_headers())
-    |> parse(module)
+    |> parse(module, options)
   end
 
-  defp parse(response, module) do
+  defp parse(response, module, options) do
     handle_errors(response, fn body ->
-      Poison.decode!(body, as: [module.__struct__])
+      body
+      |> Poison.decode!(as: [module.__struct__])
+      |> extract_fields(options)
     end)
   end
+
+  defp extract_fields(response, %{fields: "*"}), do: response
+
+  defp extract_fields(response, %{fields: fields}) do
+    fields_atom = fields |> String.split(",") |> Enum.map(&String.to_atom/1)
+
+    response
+    |> Enum.map(&Map.take(&1, fields_atom))
+  end
+
+  defp extract_fields(response, _), do: response
 
   defp handle_errors(response, fun) do
     case response do
