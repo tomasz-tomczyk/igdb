@@ -4,7 +4,7 @@ defmodule Igdb.Api do
   API, by wrapping `HTTPoison`.
   """
 
-  alias Igdb.Config
+  alias Igdb.Url
 
   @doc ~S"""
   Finds a single resource by id.
@@ -15,16 +15,23 @@ defmodule Igdb.Api do
       [%Igdb.Game{id: 359, name: "Final Fantasy XV", slug: "final-fantasy-xv", summary: "Final Fantasy XV is an action role-playing video game..."}]
 
   """
-  @spec find(module, integer) :: {:ok, term} | {:error, String.t()}
-  def find(module, resource_id) do
+  @spec find(module, integer, list) :: {:ok, term} | {:error, String.t()}
+  def find(module, resource_id, options) do
     module
-    |> generate_url(resource_id)
+    |> Url.generate_url(options, resource_id)
+    |> request(module)
+  end
+
+  @spec get(module, list) :: {:ok, term} | {:error, String.t()}
+  def get(module, options) do
+    module
+    |> Url.generate_url(options)
     |> request(module)
   end
 
   def request(url, module) do
     url
-    |> HTTPoison.get!(auth_headers())
+    |> HTTPoison.get!(Url.auth_headers())
     |> parse(module)
   end
 
@@ -57,13 +64,5 @@ defmodule Igdb.Api do
         {:ok, json} = Poison.decode(body)
         {:error, json["message"], status}
     end
-  end
-
-  defp generate_url(module, resource_id) do
-    "#{Config.api_root()}/#{module.resource_collection_name}/#{resource_id}"
-  end
-
-  defp auth_headers do
-    ["user-key": Config.api_key(), Accept: "Application/json; Charset=utf-8"]
   end
 end
