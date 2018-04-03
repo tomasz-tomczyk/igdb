@@ -6,41 +6,18 @@ defmodule Igdb.Api do
 
   alias Igdb.Url
 
-  @doc ~S"""
-  Finds a single resource by id.
-
-  ## Examples
-
-      Igdb.Game.get(359)
-      {:ok, [%Igdb.Game{id: 359, name: "Final Fantasy XV", slug: "final-fantasy-xv", summary: "Final Fantasy XV is an action role-playing video game..."}]}
-
-  """
   @spec get(module, integer, map) :: {:ok, term} | {:error, String.t()}
   def get(module, resource_id, options) when is_integer(resource_id) do
     module
     |> Url.generate_url(options, resource_id)
-    |> request(module)
+    |> request(module, :resource)
   end
 
-  @doc ~S"""
-  Finds a single resource by id.
-
-  ## Examples
-
-      Igdb.Game.get([359, 360, 361], %{fields: "name"})
-      {:ok,
-      [
-        %Igdb.Game{id: 359, name: "Final Fantasy XV"},
-        %Igdb.Game{id: 360, name: "Disney's Donald Duck: Goin' Quackers"},
-        %Igdb.Game{id: 361, name: "Far Cry 2"}
-      ]}
-
-  """
   @spec get(module, list, map) :: {:ok, term} | {:error, String.t()}
   def get(module, resource_ids, options) when is_list(resource_ids) do
     module
     |> Url.generate_url(options, resource_ids |> Enum.join(","))
-    |> request(module)
+    |> request(module, :collection)
   end
 
   @doc ~S"""
@@ -56,19 +33,27 @@ defmodule Igdb.Api do
   def search(module, options) do
     module
     |> Url.generate_url(options)
-    |> request(module)
+    |> request(module, :collection)
   end
 
-  defp request(url, module) do
+  defp request(url, module, type) do
     url
     |> HTTPoison.get!(Url.auth_headers())
-    |> parse(module)
+    |> parse(module, type)
   end
 
-  defp parse(response, module) do
+  defp parse(response, module, :collection) do
     handle_errors(response, fn body ->
       body
       |> Poison.decode!(as: [module.__struct__])
+    end)
+  end
+
+  defp parse(response, module, :resource) do
+    handle_errors(response, fn body ->
+      body
+      |> Poison.decode!(as: [module.__struct__])
+      |> List.first()
     end)
   end
 
@@ -81,7 +66,7 @@ defmodule Igdb.Api do
         :ok
 
       %{body: _, status_code: 403} ->
-        {:error, "Authentication parameters missing"}
+        {:error, "Authentication parameters missing", 403}
 
       %{body: body, status_code: status} ->
         {:ok, json} = Poison.decode(body)
