@@ -27,8 +27,13 @@ defmodule Igdb.Api do
 
   ## Examples
 
-      Igdb.Game.get(359)
-      {:ok, [ %Igdb.Game{ id: 11214, name: "World of Final Fantasy", ... } ]}
+      Igdb.Game.get([359, 360, 361], %{fields: "name"})
+      {:ok,
+      [
+        %Igdb.Game{id: 359, name: "Final Fantasy XV"},
+        %Igdb.Game{id: 360, name: "Disney's Donald Duck: Goin' Quackers"},
+        %Igdb.Game{id: 361, name: "Far Cry 2"}
+      ]}
 
   """
   @spec get(module, list, map) :: {:ok, term} | {:error, String.t()}
@@ -54,7 +59,7 @@ defmodule Igdb.Api do
     |> request(module)
   end
 
-  def request(url, module) do
+  defp request(url, module) do
     url
     |> HTTPoison.get!(Url.auth_headers())
     |> parse(module)
