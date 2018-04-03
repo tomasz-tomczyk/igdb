@@ -22,6 +22,8 @@ defmodule Igdb.Url do
     if String.length(query) > 0, do: "?" <> query, else: ""
   end
 
+  # Query building taken from
+  # https://gist.github.com/desmondhume/0fcb73bf6b7f4d9ed267d1c99c96471d
   def to_query(input, namespace) do
     input
     |> Enum.map(fn {key, value} -> parse_query("#{namespace}[#{key}]", value) end)
