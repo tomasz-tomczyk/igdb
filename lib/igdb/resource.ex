@@ -7,11 +7,11 @@ defmodule Igdb.Resource do
     quote do
       alias Igdb.Api
 
-      @spec find(integer, list) :: {:ok, list} | {:error, String.t()}
-      def find(id, options \\ []), do: Api.find(__MODULE__, id, options)
+      @spec get(integer, map) :: {:ok, list} | {:error, String.t()}
+      def get(id, options \\ %{}), do: Api.get(__MODULE__, id, options)
 
-      @spec get(list) :: {:ok, list} | {:error, String.t()}
-      def get(options \\ []), do: Api.get(__MODULE__, options)
+      @spec search(map) :: {:ok, list} | {:error, String.t()}
+      def search(options \\ %{}), do: Api.search(__MODULE__, options)
     end
   end
 end

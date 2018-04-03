@@ -54,6 +54,5 @@ defmodule Igdb.Game do
 
   use Igdb.Resource
 
-  def resource_name, do: "game"
   def resource_collection_name, do: "games"
 end

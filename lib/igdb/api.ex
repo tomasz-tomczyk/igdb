@@ -11,19 +11,44 @@ defmodule Igdb.Api do
 
   ## Examples
 
-      Igdb.Game.find(359)
-      [%Igdb.Game{id: 359, name: "Final Fantasy XV", slug: "final-fantasy-xv", summary: "Final Fantasy XV is an action role-playing video game..."}]
+      Igdb.Game.get(359)
+      {:ok, [%Igdb.Game{id: 359, name: "Final Fantasy XV", slug: "final-fantasy-xv", summary: "Final Fantasy XV is an action role-playing video game..."}]}
 
   """
-  @spec find(module, integer, list) :: {:ok, term} | {:error, String.t()}
-  def find(module, resource_id, options) do
+  @spec get(module, integer, map) :: {:ok, term} | {:error, String.t()}
+  def get(module, resource_id, options) when is_integer(resource_id) do
     module
     |> Url.generate_url(options, resource_id)
     |> request(module)
   end
 
-  @spec get(module, list) :: {:ok, term} | {:error, String.t()}
-  def get(module, options) do
+  @doc ~S"""
+  Finds a single resource by id.
+
+  ## Examples
+
+      Igdb.Game.get(359)
+      {:ok, [ %Igdb.Game{ id: 11214, name: "World of Final Fantasy", ... } ]}
+
+  """
+  @spec get(module, list, map) :: {:ok, term} | {:error, String.t()}
+  def get(module, resource_ids, options) when is_list(resource_ids) do
+    module
+    |> Url.generate_url(options, resource_ids |> Enum.join(","))
+    |> request(module)
+  end
+
+  @doc ~S"""
+  Search a resource using filters.
+
+  ## Examples
+
+      Igdb.Game.search(%{search: "Final Fantasy", limit: 1, fields: ["name"], filter: %{version_parent: %{not_exists: 1}}, order: "popularity:desc"})
+      {:ok, [%Igdb.Game{id: 359, name: "Final Fantasy XV", slug: "final-fantasy-xv", summary: "Final Fantasy XV is an action role-playing video game..."}]}
+
+  """
+  @spec search(module, map) :: {:ok, term} | {:error, String.t()}
+  def search(module, options) do
     module
     |> Url.generate_url(options)
     |> request(module)
@@ -40,14 +65,6 @@ defmodule Igdb.Api do
       Poison.decode!(body, as: [module.__struct__])
     end)
   end
-
-  # defp parse(body, :resource, module) do
-  #   Poison.decode!(body, as: module.__struct__)
-  # end
-
-  # defp parse(body, :collection, module) do
-  #   Poison.decode!(body, as: [module.__struct__])
-  # end
 
   defp handle_errors(response, fun) do
     case response do

@@ -5,8 +5,8 @@ defmodule Igdb.Url do
 
   alias Igdb.Config
 
-  def generate_url(module, options, resource_id \\ nil) do
-    "#{Config.api_root()}/#{module.resource_collection_name}/#{resource_id}" <>
+  def generate_url(module, options, resource_ids \\ nil) do
+    "#{Config.api_root()}/#{module.resource_collection_name}/#{resource_ids}" <>
       build_query(options)
   end
 
@@ -19,7 +19,7 @@ defmodule Igdb.Url do
       options
       |> to_query
 
-    if String.length(query) > 0, do: "?" <> query, else: ""
+    if String.length(query) > 0, do: "?" <> URI.encode(query), else: ""
   end
 
   # Query building taken from

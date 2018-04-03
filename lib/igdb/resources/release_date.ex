@@ -17,6 +17,5 @@ defmodule Igdb.ReleaseDate do
 
   use Igdb.Resource
 
-  def resource_name, do: "release_date"
   def resource_collection_name, do: "release_dates"
 end

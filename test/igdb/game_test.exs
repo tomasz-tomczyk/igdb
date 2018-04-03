@@ -17,7 +17,7 @@ defmodule Igdb.GameTest do
     }])
 
     with_mock HTTPoison, get!: fn _url, _headers -> response(body) end do
-      assert Game.find(359) ==
+      assert Game.get(359) ==
                {:ok,
                 [
                   %Igdb.Game{
