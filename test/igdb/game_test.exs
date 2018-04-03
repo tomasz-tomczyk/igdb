@@ -6,9 +6,7 @@ defmodule Igdb.GameTest do
   import TestHelper
   import Mock
 
-  doctest Igdb.Game
-
-  test "Find single game" do
+  test "Get all information from a specific game" do
     body = ~s([{
       "id": 359,
       "name": "Final Fantasy XV",
@@ -19,14 +17,12 @@ defmodule Igdb.GameTest do
     with_mock HTTPoison, get!: fn _url, _headers -> response(body) end do
       assert Game.get(359) ==
                {:ok,
-                [
-                  %Igdb.Game{
-                    id: 359,
-                    name: "Final Fantasy XV",
-                    slug: "final-fantasy-xv",
-                    summary: "Final Fantasy..."
-                  }
-                ]}
+                %Igdb.Game{
+                  id: 359,
+                  name: "Final Fantasy XV",
+                  slug: "final-fantasy-xv",
+                  summary: "Final Fantasy..."
+                }}
 
       assert called(HTTPoison.get!("#{Config.api_root()}/games/359", :_))
     end
