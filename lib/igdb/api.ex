@@ -19,7 +19,7 @@ defmodule Igdb.Api do
   def get(module, resource_id, options) when is_integer(resource_id) do
     module
     |> Url.generate_url(options, resource_id)
-    |> request(module, options)
+    |> request(module)
   end
 
   @doc ~S"""
@@ -35,7 +35,7 @@ defmodule Igdb.Api do
   def get(module, resource_ids, options) when is_list(resource_ids) do
     module
     |> Url.generate_url(options, resource_ids |> Enum.join(","))
-    |> request(module, options)
+    |> request(module)
   end
 
   @doc ~S"""
@@ -51,33 +51,21 @@ defmodule Igdb.Api do
   def search(module, options) do
     module
     |> Url.generate_url(options)
-    |> request(module, options)
+    |> request(module)
   end
 
-  def request(url, module, options) do
+  def request(url, module) do
     url
     |> HTTPoison.get!(Url.auth_headers())
-    |> parse(module, options)
+    |> parse(module)
   end
 
-  defp parse(response, module, options) do
+  defp parse(response, module) do
     handle_errors(response, fn body ->
       body
       |> Poison.decode!(as: [module.__struct__])
-      |> extract_fields(options)
     end)
   end
-
-  defp extract_fields(response, %{fields: "*"}), do: response
-
-  defp extract_fields(response, %{fields: fields}) do
-    fields_atom = fields |> String.split(",") |> Enum.map(&String.to_atom/1)
-
-    response
-    |> Enum.map(&Map.take(&1, fields_atom))
-  end
-
-  defp extract_fields(response, _), do: response
 
   defp handle_errors(response, fun) do
     case response do
