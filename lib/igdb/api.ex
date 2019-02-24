@@ -15,15 +15,17 @@ defmodule Igdb.Api do
   @doc ~S"""
   Search a resource using filters.
   """
-  def search(module, _options) do
+  def search(module, options) do
+    body = Igdb.Options.build(options)
+
     module
     |> generate_url()
-    |> request()
+    |> request(body)
   end
 
-  defp request(url) do
+  defp request(url, body) do
     url
-    |> HTTPoison.get!(auth_headers())
+    |> HTTPoison.post!(body, auth_headers())
     |> parse()
   end
 

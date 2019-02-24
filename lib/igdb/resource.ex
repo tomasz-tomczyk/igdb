@@ -7,8 +7,8 @@ defmodule Igdb.Resource do
     quote do
       alias Igdb.Api
 
-      @spec search(map) :: {:ok, list} | {:error, String.t()}
-      def search(options \\ %{}), do: Api.search(__MODULE__, options)
+      @spec search(list) :: {:ok, list} | {:error, String.t()}
+      def search(options \\ []), do: Api.search(__MODULE__, options)
     end
   end
 end
