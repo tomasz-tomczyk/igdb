@@ -47,13 +47,13 @@ defmodule Igdb.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:httpoison, "~> 1.0"},
+      {:httpoison, "~> 1.4"},
       {:poison, "~> 3.1"},
       {:mock, "~> 0.3.0", only: :test},
-      {:credo, "~> 0.9.0-rc1", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.8", only: :test},
-      {:ex_doc, "~> 0.16", only: :dev, runtime: false},
-      {:inch_ex, only: :docs}
+      {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.10", only: :test},
+      {:ex_doc, "~> 0.19", only: :dev, runtime: false},
+      {:inch_ex, github: "rrrene/inch_ex", only: [:dev, :test]}
     ]
   end
 end
