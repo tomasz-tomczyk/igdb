@@ -5,13 +5,13 @@
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `igdb` to your list of dependencies in `mix.exs`:
+The package can be installed by adding `igdb` to your list of dependencies in
+`mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:igdb, "~> 0.1.0"}
+    {:igdb, "~> 1.0.0"}
   ]
 end
 ```
@@ -39,7 +39,7 @@ following content:
 
 ```bash
 export IGDB_API_KEY="<production key here>"
-export IGDB_API_ROOT="https://api-XXXXXXXXXX.apicast.io"
+export IGDB_API_ROOT="https://api-v3.igdb.com"
 ```
 
 Then, just be sure to run `source .env` in your shell before compiling your
@@ -47,50 +47,42 @@ project.
 
 ## Usage
 
-For most resources, you can get it by ID and get an individual object back or
-search using filters.
-
-### Get
-
-If the resource was found, `get/2` will return a two-element tuple in this
-format, `{:ok, item}`.
-
-    Igdb.Game.get(359)
-    {:ok, %Igdb.Game{ ... }}
-
-If the resource could not be found, `get/2` will return a 2-element tuple
-in this format, `{:ok, nil}`. The `code` is the HTTP status code
-returned by the IGDB API, for example, 404.
-
-    Igdb.Game.get(100000000)
-    {:ok, nil}
-
-If the resource could not be loaded, `get/2` will return a 3-element tuple
-in this format, `{:error, message, code}`. The `code` is the HTTP status code
-returned by the IGDB API, for example, 404.
-
 ### Search
 
 Returns a list of resources found from given search options.
 
+If the resources could not be loaded, `search/1` will return a 3-element tuple
+in this format, `{:error, message, code}`. The `code` is the HTTP status code
+returned by the IGDB API, for example, 404.
+
 #### Options
 
-The options should be passed as a map. Below is a list of allowed keys:
+The options should be passed as a keyword list. Below is a list of allowed keys:
 
 | Option   | Values                                                                     | Example                                              |
 |----------|----------------------------------------------------------------------------|------------------------------------------------------|
-| `fields` | string; comma separated, can be nested with periods                        | `"id,game.name"` `"*"`                               |
-| `expand` | string; comma separated list of nested objects to expand                   | `"game"`                                             |
-| `order`  | string; column with the direction (asc/desc)                               | `"created_at:desc"`                                  |
+| `fields` | atom, string or list of those; can be nested with periods                  | "*", ["*", "game.*]                                  |
+| `sort`   | string; column with the direction (asc/desc); cannot be used with `search` | `"created_at desc"`                                  |
 | `limit`  | integer                                                                    | `10`                                                 |
-| `search` | string; text you want to search for                                        | `"Final Fantasy"`                                    |
-| `filter` | nested list; for each column you can have comparison with `gt`, `lt`, `eq` | `%{date: %{gt: 1500619813000}, platform: %{eq: 48}}` |
+| `search` | string; text you want to search for; cannot be used with `sort`            | `"Final Fantasy"`                                    |
+| `where`  | list of strings, will be joined with AND - you may construct your own      | `["platforms = 48", "date > 1538129354"]`            |
+| `exclude`| string; exclude irrelevant data from your query                            | `"tags"`                                             |
 
 Refer to individual resources for the available columns to filter on.
 
 #### Examples
 
-    Igdb.Game.search(%{search: "Final Fantasy", order: "popularity:desc", limit: 5, filter: %{platforms: %{eq: 48}}, fields: "*"})
+```
+iex> Igdb.Game.search(search: "Final Fantasy", limit: 5, where: ["platforms = 48"], fields: "name")
+{:ok,
+[
+  %{id: 37087, name: "Monster of the Deep: Final Fantasy XV"},
+  %{id: 11169, name: "Final Fantasy VII Remake"},
+  %{id: 36831, name: "Dissidia Final Fantasy NT"},
+  %{id: 38492, name: "Final Fantasy XV Deluxe Edition"},
+  %{id: 26069, name: "FINAL FANTASY XV - Season Pass Upgrade"}
+]}
+```
 
 ## Credits
 

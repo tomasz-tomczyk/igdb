@@ -19,7 +19,7 @@ defmodule Igdb.Api do
     module
     |> generate_request(options)
     |> request()
-    |> parse(module)
+    |> parse()
   end
 
   defp generate_request(module, options) do
@@ -31,11 +31,10 @@ defmodule Igdb.Api do
     |> HTTPoison.post!(body, auth_headers())
   end
 
-  defp parse(response, module) do
+  defp parse(response) do
     handle_errors(response, fn body ->
       body
       |> Jason.decode!(keys: :atoms)
-      |> Enum.map(&struct(module, &1))
     end)
   end
 
@@ -49,6 +48,12 @@ defmodule Igdb.Api do
 
       %{body: _, status_code: 403} ->
         {:error, "Authentication parameters missing", 403}
+
+      %{body: body, status_code: status_code} ->
+        errors =
+          body |> Jason.decode!(keys: :atoms) |> Enum.map(&Map.get(&1, :cause)) |> Enum.join(". ")
+
+        {:error, errors, status_code}
     end
   end
 end
