@@ -61,7 +61,7 @@ The options should be passed as a keyword list. Below is a list of allowed keys:
 
 | Option   | Values                                                                     | Example                                              |
 |----------|----------------------------------------------------------------------------|------------------------------------------------------|
-| `fields` | atom, string or list of those; can be nested with periods                  | "*", ["*", "game.*]                                  |
+| `fields` | atom, string or list of those; can be nested with periods                  | `"*", ["*", "game.*]`                                |
 | `sort`   | string; column with the direction (asc/desc); cannot be used with `search` | `"created_at desc"`                                  |
 | `limit`  | integer                                                                    | `10`                                                 |
 | `search` | string; text you want to search for; cannot be used with `sort`            | `"Final Fantasy"`                                    |
