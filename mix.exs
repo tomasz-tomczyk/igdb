@@ -5,7 +5,7 @@ defmodule Igdb.MixProject do
     [
       app: :igdb,
       description: "Elixir wrapper for the Internet Game Database API. https://www.igdb.com/",
-      version: "1.0.0",
+      version: "1.0.1",
       elixir: "~> 1.6",
       start_permanent: Mix.env() == :prod,
       deps: deps(),

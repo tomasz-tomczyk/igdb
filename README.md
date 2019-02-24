@@ -11,14 +11,12 @@ The package can be installed by adding `igdb` to your list of dependencies in
 ```elixir
 def deps do
   [
-    {:igdb, "~> 1.0.0"}
+    {:igdb, "~> 1.0.1"}
   ]
 end
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/igdb](https://hexdocs.pm/igdb).
+Documentation can be found at [https://hexdocs.pm/igdb](https://hexdocs.pm/igdb).
 
 ## Configuration
 
@@ -82,6 +80,29 @@ iex> Igdb.Game.search(search: "Final Fantasy", limit: 5, where: ["platforms = 48
   %{id: 38492, name: "Final Fantasy XV Deluxe Edition"},
   %{id: 26069, name: "FINAL FANTASY XV - Season Pass Upgrade"}
 ]}
+```
+
+## Testing
+
+Unit tests:
+
+```
+mix test
+```
+
+There is an external test, not run by default, that hits the API for each
+resource endpoint. To enable, it, first ensure you have the API configured in
+the ENV:
+
+```
+export IGDB_TEST_API_KEY="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+export IGDB_TEST_API_ROOT="https://api-v3.igdb.com"
+```
+
+And run:
+
+```
+mix test --include external
 ```
 
 ## Credits
