@@ -48,7 +48,7 @@ defmodule Igdb.MixProject do
   defp deps do
     [
       {:httpoison, "~> 1.4"},
-      {:poison, "~> 3.1"},
+      {:jason, "~> 1.1"},
       {:credo, "~> 1.0.0", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:ex_doc, "~> 0.19", only: :dev, runtime: false},
