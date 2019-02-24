@@ -46,8 +46,8 @@ defmodule Igdb.Api do
       %{body: _, status_code: 204} ->
         :ok
 
-      %{body: _, status_code: 403} ->
-        {:error, "Authentication parameters missing", 403}
+      %{body: message, status_code: 404} ->
+        {:error, message, 404}
 
       %{body: body, status_code: status_code} ->
         errors =
