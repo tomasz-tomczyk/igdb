@@ -16,23 +16,26 @@ defmodule Igdb.Api do
   Search a resource using filters.
   """
   def search(module, options) do
-    body = Igdb.Options.build(options)
-
     module
-    |> generate_url()
-    |> request(body)
+    |> generate_request(options)
+    |> request()
+    |> parse(module)
   end
 
-  defp request(url, body) do
+  defp generate_request(module, options) do
+    {generate_url(module), Igdb.Options.build(options)}
+  end
+
+  defp request({url, body}) do
     url
     |> HTTPoison.post!(body, auth_headers())
-    |> parse()
   end
 
-  defp parse(response) do
+  defp parse(response, module) do
     handle_errors(response, fn body ->
       body
       |> Jason.decode!(keys: :atoms)
+      |> Enum.map(&struct(module, &1))
     end)
   end
 
