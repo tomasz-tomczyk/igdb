@@ -1,5 +1,5 @@
 # IGDB
-[![Build Status](https://api.travis-ci.org/tomasz-tomczyk/igdb.svg?branch=master)](https://travis-ci.org/tomasz-tomczyk/igdb)
+[![Actions Status](https://github.com/tomasz-tomczyk/igdb/workflows/Build/badge.svg)](https://github.com/tomasz-tomczyk/igdb/actions)
 [![Coverage Status](https://coveralls.io/repos/github/tomasz-tomczyk/igdb/badge.svg?branch=master)](https://coveralls.io/github/tomasz-tomczyk/igdb?branch=master)
 [![Inline docs](http://inch-ci.org/github/tomasz-tomczyk/igdb.svg)](http://inch-ci.org/github/tomasz-tomczyk/igdb)
 
